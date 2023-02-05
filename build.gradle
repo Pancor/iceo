@@ -1,5 +1,6 @@
 plugins {
     id 'java'
+    id "io.freefair.lombok" version "6.6.1"
 }
 
 group 'org.example'
@@ -10,6 +11,8 @@ repositories {
 }
 
 dependencies {
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.14.2'
+
     implementation 'io.cucumber:cucumber-picocontainer:7.11.1'
     testImplementation 'io.cucumber:cucumber-java:7.11.1'
     testImplementation 'io.cucumber:cucumber-junit-platform-engine:7.11.1'
