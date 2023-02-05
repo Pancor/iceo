@@ -20,5 +20,5 @@ apiKey=7c2f911641bd26da43ec931c0ee885ea
 
 To start tests just use this command in project main path:
 ```
-./gradlew clean test
+./gradlew clean cucumber
 ```
