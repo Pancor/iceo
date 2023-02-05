@@ -2,7 +2,6 @@ package org.example.steps;
 
 import io.cucumber.java.After;
 import io.cucumber.java.Before;
-import io.cucumber.java.ParameterType;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
@@ -16,8 +15,6 @@ import org.example.model.Currency;
 import org.example.model.RatesError;
 import org.example.model.RatesErrorCode;
 import org.example.model.RatesResponse;
-import org.junit.platform.suite.api.SelectClasspathResource;
-import org.junit.platform.suite.api.Suite;
 
 import java.time.LocalDate;
 import java.util.Arrays;
@@ -25,8 +22,6 @@ import java.util.HashMap;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@Suite
-@SelectClasspathResource("features")
 public class LatestRatesStepDefinitions {
 
     private String requestMethod = "GET";
@@ -45,16 +40,6 @@ public class LatestRatesStepDefinitions {
         requestParameters.clear();
     }
 
-    @ParameterType("true|True|TRUE|false|False|FALSE")
-    public Boolean booleanValue(String value) {
-        return Boolean.valueOf(value);
-    }
-
-    @ParameterType("[^\\s]*")
-    public RatesErrorCode ratesErrorCode(String value) {
-        return RatesErrorCode.json(value);
-    }
-
     @Given("request over HTTPS")
     public void requestOverPlainHTTP() {
         String baseUrl = ConfigHelper.getBaseUrl();
@@ -62,31 +47,31 @@ public class LatestRatesStepDefinitions {
     }
 
     @Given("proper access key")
-    public void properApiKey() {
+    public void properAccessKey() {
         requestParameters.put("access_key", ConfigHelper.getApiKey());
     }
 
     @Given("{string} as access key")
-    public void wrongApiKey(String apiKey) {
+    public void wrongAccessKey(String apiKey) {
         requestParameters.put("access_key", apiKey);
     }
 
-    @Given("preparing request without provided base currency")
+    @Given("empty base currency")
     public void requestWithoutProvidedBaseCurrency() {
         //intentionally empty
     }
 
-    @Given("preparing request without provided currencies to receive")
-    public void preparingRequestWithoutProvidedCurrenciesToReceive() {
+    @Given("empty currencies to receive")
+    public void requestWithoutProvidedCurrenciesToReceive() {
         //intentionally empty
     }
 
-    @Given("setting base currency to {string}")
+    @Given("base currency to {string}")
     public void settingBaseCurrencyToCurrency(String baseCurrency) {
         requestParameters.put("base", baseCurrency);
     }
 
-    @Given("setting currency codes to receive to {string}")
+    @Given("currency codes to receive to {string}")
     public void settingCurrencyCodesToReceiveTo(String currencies) {
         requestParameters.put("symbols", currencies);
     }
@@ -118,8 +103,8 @@ public class LatestRatesStepDefinitions {
     }
 
     @Then("should return {int} status code")
-    public void shouldReturnExpectedStatusCode(int expectedStatusCode) {
-        assertThat(response.getStatusCode()).isEqualTo(expectedStatusCode);
+    public void shouldReturnExpectedStatusCode(int statusCode) {
+        assertThat(response.getStatusCode()).isEqualTo(statusCode);
     }
 
     @Then("should not return {int} status code")
@@ -179,7 +164,7 @@ public class LatestRatesStepDefinitions {
     }
 
     @Then("should return proper timestamp")
-    public void shouldReturnCurrentTimestamp() {
+    public void shouldReturnProperTimestamp() {
         RatesResponse ratesResponse = response.getBody().as(RatesResponse.class);
         long currentTimestamp = System.currentTimeMillis() / 1000;
 
@@ -194,8 +179,8 @@ public class LatestRatesStepDefinitions {
         assertThat(responseDate).isBeforeOrEqualTo(LocalDate.now());
     }
 
-    @Then("response should be wrapped {string}")
-    public void responseShouldBeWrapped(String callback) {
+    @Then("response should be wrapped in {string}")
+    public void responseShouldBeWrappedInCallback(String callback) {
         String rawResponse = response.asString();
 
         assertThat(rawResponse).startsWith(callback + "(")
@@ -203,12 +188,12 @@ public class LatestRatesStepDefinitions {
     }
 
     @Then("response should contain header named {string}")
-    public void responseShouldContainHeaderNamed(String header) {
+    public void responseShouldContainGivenHeader(String header) {
         assertThat(response.header(header)).isNotEmpty();
     }
 
     @Then("should return date in YYY-MM-DD format")
-    public void shouldReturnDateInFormat() {
+    public void shouldReturnDateInProperFormat() {
         RatesResponse ratesResponse = response.getBody().as(RatesResponse.class);
         String dateRegex = "\\d{4}-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])";
 
